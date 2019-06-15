@@ -104,7 +104,7 @@ function join() {
   var channel_key = null;
 
   console.log("Init AgoraRTC client with App ID: " + appId.value);
-  client = AgoraRTC.createClient({mode: 'live'});
+  client = AgoraRTC.createClient({mode: "live", codec: "vp8"});
   client.init(appId.value, function () {
     console.log("AgoraRTC client initialized");
     deviceMgmtApis(client);
