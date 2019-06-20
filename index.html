@@ -45,7 +45,7 @@ Host: <input id="video" type="checkbox" checked></input>
     </div-->
 
 <div id="video" style="margin:0 auto;">
-    <div id="agora_local" style="float:right;width:210px;height:147px;display:inline-block;"></div>
+    <div id="agora_local" style="float:left;width:420px;height:314px;display:inline-block;"></div>
 </div>
 
 <script language="javascript">
@@ -114,7 +114,7 @@ function join() {
       if (document.getElementById("video").checked) {
         camera = videoSource.value;
         microphone = audioSource.value;
-        localStream = AgoraRTC.createStream({streamID: uid, audio: true, cameraId: camera, microphoneId: microphone, video: document.getElementById("video").checked, screen: false});
+        localStream = AgoraRTC.createStream({streamID: uid, audio: false, cameraId: camera, microphoneId: microphone, video: document.getElementById("video").checked, screen: false});
         //localStream = AgoraRTC.createStream({streamID: uid, audio: false, cameraId: camera, microphoneId: microphone, video: false, screen: true, extensionId: 'minllpmhdgpndnkomcoccfekfegnlikg'});
         if (document.getElementById("video").checked) {
           localStream.setVideoProfile('720p_3');
@@ -134,7 +134,10 @@ function join() {
         localStream.init(function() {
           console.log("getUserMedia successfully");
           localStream.play('agora_local');
-            mixAudio(localStream);
+          if(document.querySelector(`[value=${camera}]`).data!==0){
+            document.getElementById("agora_local").style += 'transform:scale(-1)';
+          }
+            // mixAudio(localStream);
           client.publish(localStream, function (err) {
             console.log("Publish local stream error: " + err);
           });
@@ -240,6 +243,7 @@ function getDevices() {
         audioSelect.appendChild(option);
       } else if (device.kind === 'videoinput') {
         option.text = device.label || 'camera ' + (videoSelect.length + 1);
+        option["data"] = videoSelect.length;
         videoSelect.appendChild(option);
       } else {
         console.log('Some other kind of source/device: ', device);
